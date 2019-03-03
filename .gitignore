@@ -1,0 +1,7 @@
+.git/
+.vscode/
+build/
+source/_build/
+
+sphinx.code-workspace
+
