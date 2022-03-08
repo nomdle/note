@@ -12,14 +12,14 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
+import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-
+import hachibee_sphinx_theme
 
 # -- Project information -----------------------------------------------------
 
-project = 'soyoyoo_doc'
+project = 'nomdle'
 copyright = '2019, soyoyoo'
 author = 'soyoyoo'
 
@@ -58,7 +58,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = 'ko'
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -74,8 +74,8 @@ pygments_style = None
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'nature'
-
+html_theme = 'hachibee'
+html_theme_path = [hachibee_sphinx_theme.get_html_themes_path()]
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
@@ -85,8 +85,8 @@ html_theme = 'nature'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
-
+html_static_path = ['C:/Users/tjrdu/projects/note/docs/_static']
+html_favicon = 'C:/Users/tjrdu/projects/note/docs/_static/favicon.ico'
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #
@@ -101,7 +101,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'soyoyoo_docdoc'
+htmlhelp_basename = 'nomdle'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -128,7 +128,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'soyoyoo_doc.tex', 'soyoyoo\\_doc Documentation',
+    (master_doc, 'nomdle.tex', 'nomdle Documentation',
      'soyoyoo', 'manual'),
 ]
 
@@ -138,7 +138,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'soyoyoo_doc', 'soyoyoo_doc Documentation',
+    (master_doc, 'nomdle', 'nomdle Documentation',
      [author], 1)
 ]
 
@@ -149,8 +149,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'soyoyoo_doc', 'soyoyoo_doc Documentation',
-     author, 'soyoyoo_doc', 'One line description of project.',
+    (master_doc, 'nomdle', 'nomdle Documentation',
+     author, 'nomdle', 'One line description of project.',
      'Miscellaneous'),
 ]
 

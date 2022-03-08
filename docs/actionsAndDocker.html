@@ -1,0 +1,575 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3c.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="content-style-type" content="text/css">
+        <meta http-equiv="content-script-type" content="text/javascript">
+        <meta name=generator content="Sphinx">
+        <meta name=viewport content="width=device-width,initial-scale=1.0">
+        <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+        <title>DockerでDBを利用するUNITテストをGithubで実行 &mdash; nomdle 0.1 documentation</title>
+
+        
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/main.css" type="text/css" />
+    <link rel="stylesheet" href="_static/genericons.css" type="text/css" /><link rel="stylesheet" href="_static/pygments.css" type="text/css" /><link rel="stylesheet" href="_static/main.css" type="text/css" />
+    <link rel="stylesheet" href="_static/mobile.css" type="text/css" media="only screen and (max-device-width: 568px)">
+        
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+        <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <script type="text/javascript" src="_static/backtop.js"></script>
+
+    </head>
+    <body>
+    <div class="content">
+        <header id="top-header">
+            <div class="left">
+    <ul class="breadcrumb">
+        <li>
+            <a href="index.html">nomdle 0.1 documentation</a>
+             &raquo;
+        </li> 
+    </ul>
+            </div>
+            <div class="right">
+                
+    <ul class="relative">
+      <li >
+            <a href="genindex.html" title="General Index"
+               class="icon-index"
+                accesskey="I"></a>
+        </li>
+      <li >
+            <a href="index.html" title="note"
+               class="icon-previous"
+                accesskey="P"></a>
+        </li>
+    </ul>
+            </div>
+            <div class="clearer"></div>
+        </header>
+        
+
+        <div class="documentwrapper">
+        <div class="sidebarwrapper">
+            <div class="sidebar">
+                    <h3><a href="index.html">Top</a></h3><nav class="localtoc">
+      <ul>
+<li><a class="reference internal" href="#">DockerでDBを利用するUNITテストをGithubで実行</a><ul>
+<li><a class="reference internal" href="#id1">目標</a></li>
+<li><a class="reference internal" href="#id2">手順</a><ul>
+<li><a class="reference internal" href="#database">Database構成</a></li>
+<li><a class="reference internal" href="#id3">テストソース</a><ul>
+<li><a class="reference internal" href="#dbservice-kt">DbService.kt</a></li>
+<li><a class="reference internal" href="#dbservicetest-kt">DbServiceTest.kt</a></li>
+<li><a class="reference internal" href="#build-gradle-kts">build.gradle.kts</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mariadbimage">MariaDBのimage作成</a><ul>
+<li><a class="reference internal" href="#image">imageをダウンロード</a></li>
+<li><a class="reference internal" href="#mariadb">MariaDB実行</a></li>
+<li><a class="reference internal" href="#container">Container実行確認</a></li>
+<li><a class="reference internal" href="#id4">Containerへ接続</a></li>
+<li><a class="reference internal" href="#id5">初期化スクリプト作成</a></li>
+<li><a class="reference internal" href="#commit">修正をCommit</a></li>
+<li><a class="reference internal" href="#id6">Imageを再実行</a></li>
+<li><a class="reference internal" href="#databasetable">DatabaseとTable確認</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#imagegithub">作成したImageをGithubへアップロード</a><ul>
+<li><a class="reference internal" href="#githubaccess-token">GithubのAccess Token作成</a></li>
+<li><a class="reference internal" href="#githubimagepush">GithubへImageをPush</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#workflows">Workflows作成</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id7">課題</a></li>
+</ul>
+</li>
+</ul>
+
+</nav><div class="relative">
+      <h4>Previous topic</h4>
+      <p class="topless"><a href="index.html"
+                            title="previous chapter">note</a></p>
+</div>
+  <h4>This Page</h4>
+  <a href="_sources/actionsAndDocker.rst.txt"
+           rel="nofollow">Show Source</a>
+<div id="searchbox" style="display: none">
+  <h5>Quick search</h5>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" placeholder=' quick search' />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+            </div>
+        </div>
+            <div class="document">
+                <div class="body">
+                    
+    <section id="dockerdbunitgithub">
+<h1>DockerでDBを利用するUNITテストをGithubで実行<a class="headerlink" href="#dockerdbunitgithub" title="Permalink to this headline">¶</a></h1>
+<section id="id1">
+<h2>目標<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Databaseを利用するUNITテストをGithubのリソースのみ利用して実行できるようにする。</p>
+<ul class="simple">
+<li><p>Docker Containerで稼働するMariaDBイメージをGithubにアップ</p></li>
+<li><p>MariaDB上のテーブルへアクセスするUNITテストを作成</p></li>
+<li><p>ActionsのWorkflowでDockerイメージのDatabaseを利用してUNITテストを実行</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2>手順<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<section id="database">
+<h3>Database構成<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Server Host : localhost</p></li>
+<li><p>Port : 3306</p></li>
+<li><p>Database : logger</p></li>
+<li><p>Username : root</p></li>
+<li><p>Password : maria</p></li>
+<li><p>Table : message_log</p></li>
+</ul>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 52%" />
+<col style="width: 48%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>registered</p></td>
+<td><p>TIMESTAMP</p></td>
+</tr>
+<tr class="row-odd"><td><p>message</p></td>
+<td><p>TEXT</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id3">
+<h3>テストソース<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>Tableに対してアクセスする簡単なUNITテストを用意</p>
+<section id="dbservice-kt">
+<h4>DbService.kt<a class="headerlink" href="#dbservice-kt" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-kotlin notranslate"><div class="highlight"><pre><span></span><span class="c1">//~~~省略~~~</span>
+<span class="kd">class</span> <span class="nc">DbService</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">init</span> <span class="p">{</span>
+        <span class="n">Database</span><span class="p">.</span><span class="na">connect</span><span class="p">(</span>
+            <span class="s">&quot;jdbc:mysql://localhost:3306/logger&quot;</span><span class="p">,</span>
+            <span class="n">driver</span> <span class="o">=</span> <span class="s">&quot;com.mysql.cj.jdbc.Driver&quot;</span><span class="p">,</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="s">&quot;root&quot;</span><span class="p">,</span>
+            <span class="n">password</span> <span class="o">=</span> <span class="s">&quot;maria&quot;</span>
+        <span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="kd">fun</span> <span class="nf">register</span><span class="p">(</span><span class="nd">@NotNull</span> <span class="n">registered</span><span class="p">:</span> <span class="n">LocalDateTime</span><span class="p">,</span> <span class="nd">@NotNull</span> <span class="n">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">MessageLog</span><span class="p">.</span><span class="na">insert</span> <span class="p">{</span>
+            <span class="nb">it</span><span class="o">[</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">registered</span><span class="o">]</span> <span class="o">=</span> <span class="n">registered</span>
+            <span class="nb">it</span><span class="o">[</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">message</span><span class="o">]</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="dbservicetest-kt">
+<h4>DbServiceTest.kt<a class="headerlink" href="#dbservicetest-kt" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-kotlin notranslate"><div class="highlight"><pre><span></span><span class="c1">//~~~省略~~~</span>
+<span class="kd">class</span> <span class="nc">DbServiceTest</span> <span class="p">{</span>
+    <span class="nd">@Test</span>
+    <span class="kd">fun</span> <span class="nf">testInsert</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">val</span> <span class="nv">ds</span> <span class="o">=</span> <span class="n">DbService</span><span class="p">()</span>
+        <span class="n">transaction</span> <span class="p">{</span>
+            <span class="n">MessageLog</span><span class="p">.</span><span class="na">deleteAll</span><span class="p">()</span>
+
+            <span class="kd">val</span> <span class="nv">expected</span> <span class="o">=</span> <span class="n">mapOf</span><span class="o">&lt;</span><span class="kt">Int</span><span class="p">,</span> <span class="n">Pair</span><span class="o">&lt;</span><span class="n">LocalDateTime</span><span class="p">,</span> <span class="kt">String</span><span class="o">&gt;&gt;</span><span class="p">(</span>
+                <span class="m">0</span> <span class="n">to</span> <span class="n">Pair</span><span class="p">(</span><span class="n">LocalDateTime</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="m">2021</span><span class="p">,</span> <span class="m">9</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span> <span class="s">&quot;first message&quot;</span><span class="p">),</span>
+                <span class="m">1</span> <span class="n">to</span> <span class="n">Pair</span><span class="p">(</span><span class="n">LocalDateTime</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="m">2021</span><span class="p">,</span> <span class="m">10</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">),</span> <span class="s">&quot;second message&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+
+            <span class="c1">// execute</span>
+            <span class="n">expected</span><span class="p">.</span><span class="na">values</span><span class="p">.</span><span class="na">forEach</span> <span class="p">{</span> <span class="n">ds</span><span class="p">.</span><span class="na">register</span><span class="p">(</span><span class="nb">it</span><span class="p">.</span><span class="na">first</span><span class="p">,</span> <span class="nb">it</span><span class="p">.</span><span class="na">second</span><span class="p">)</span> <span class="p">}</span>
+
+            <span class="c1">// assert</span>
+            <span class="n">MessageLog</span><span class="p">.</span><span class="na">selectAll</span><span class="p">().</span><span class="na">orderBy</span><span class="p">(</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">registered</span><span class="p">).</span><span class="na">forEachIndexed</span> <span class="p">{</span> <span class="n">index</span><span class="p">,</span> <span class="n">resultRow</span> <span class="o">-&gt;</span>
+                <span class="kd">val</span> <span class="nv">col1</span> <span class="o">=</span> <span class="n">resultRow</span><span class="o">[</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">registered</span><span class="o">]</span>
+                <span class="kd">val</span> <span class="nv">col2</span> <span class="o">=</span> <span class="n">resultRow</span><span class="o">[</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">message</span><span class="o">]</span>
+
+                <span class="n">assertEquals</span><span class="p">(</span>
+                    <span class="n">expected</span><span class="o">[</span><span class="n">index</span><span class="o">]!!</span><span class="p">.</span><span class="na">first</span><span class="p">,</span> <span class="n">col1</span><span class="p">,</span> <span class="s">&quot;index %d : registered&quot;</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">assertEquals</span><span class="p">(</span>
+                    <span class="n">expected</span><span class="o">[</span><span class="n">index</span><span class="o">]!!</span><span class="p">.</span><span class="na">second</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="s">&quot;index %d : message&quot;</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="build-gradle-kts">
+<h4>build.gradle.kts<a class="headerlink" href="#build-gradle-kts" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-kotlin notranslate"><div class="highlight"><pre><span></span><span class="c1">//~~~省略~~~</span>
+<span class="n">tasks</span> <span class="p">{</span>
+    <span class="n">compileKotlin</span> <span class="p">{</span>
+        <span class="n">kotlinOptions</span><span class="p">.</span><span class="na">jvmTarget</span> <span class="o">=</span> <span class="s">&quot;15&quot;</span>
+    <span class="p">}</span>
+    <span class="n">compileTestKotlin</span> <span class="p">{</span>
+        <span class="n">kotlinOptions</span><span class="p">.</span><span class="na">jvmTarget</span> <span class="o">=</span> <span class="s">&quot;15&quot;</span>
+    <span class="p">}</span>
+    <span class="n">test</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="na">testLogging</span> <span class="p">{</span>
+            <span class="k">this</span><span class="p">.</span><span class="na">showStandardStreams</span> <span class="o">=</span> <span class="kc">true</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="mariadbimage">
+<h3>MariaDBのimage作成<a class="headerlink" href="#mariadbimage" title="Permalink to this headline">¶</a></h3>
+<section id="image">
+<h4>imageをダウンロード<a class="headerlink" href="#image" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker pull mariadb
+Using default tag: latest
+latest: Pulling from library/mariadb
+ea362f368469: Pull <span class="nb">complete</span>
+adb9a1b1379d: Pull <span class="nb">complete</span>
+ac5c95406850: Pull <span class="nb">complete</span>
+fa48d8b47ec1: Pull <span class="nb">complete</span>
+bcf1feb44ac3: Pull <span class="nb">complete</span>
+8a5de7784a0f: Pull <span class="nb">complete</span>
+b8724b8a281a: Pull <span class="nb">complete</span>
+a8a7c3f612d6: Pull <span class="nb">complete</span>
+39b09b59e889: Pull <span class="nb">complete</span>
+14bc3a6b0a94: Pull <span class="nb">complete</span>
+Digest: sha256:5a37e65a6414d78f60d523c4ddcf93d715854337beb46f8beeb1a23d83262184
+Status: Downloaded newer image <span class="k">for</span> mariadb:latest
+docker.io/library/mariadb:latest
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker images
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+mariadb      latest    d462573d8688   <span class="m">2</span> weeks ago   410MB
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;
+</pre></div>
+</div>
+</section>
+<section id="mariadb">
+<h4>MariaDB実行<a class="headerlink" href="#mariadb" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker run --name dbcontainer -d -p <span class="m">3306</span>:3306 -e <span class="nv">MYSQL_ROOT_PASSWORD</span><span class="o">=</span>maria mariadb
+586b26c89f12109e1ebd6c166ca5ff675f74427ad88bd5dc444805874910401e
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>-name : container name</p></li>
+<li><p>-d : daemon execute</p></li>
+<li><p>-p : local port / container port</p></li>
+<li><p>-e : environment variable</p></li>
+<li><p>mariadb : image name</p></li>
+</ul>
+</section>
+<section id="container">
+<h4>Container実行確認<a class="headerlink" href="#container" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS              PORTS                    NAMES
+586b26c89f12   mariadb   <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   About a minute ago   Up About a minute   <span class="m">0</span>.0.0.0:3306-&gt;3306/tcp   dbcontainer
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h4>Containerへ接続<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker <span class="nb">exec</span> -it dbcontainer /bin/bash
+root@586b26c89f12:/#
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>-i : interactive</p></li>
+<li><p>-t : tty(teletpyewriter)</p></li>
+</ul>
+</section>
+<section id="id5">
+<h4>初期化スクリプト作成<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>root@586b26c89f12:/# <span class="nb">cd</span> docker-entrypoint-initdb.d/
+root@586b26c89f12:/docker-entrypoint-initdb.d# <span class="nb">echo</span> <span class="s2">&quot;create database logger;&quot;</span> &gt;&gt; init.sql
+root@586b26c89f12:/docker-entrypoint-initdb.d# <span class="nb">echo</span> <span class="s2">&quot;use logger;&quot;</span> &gt;&gt; init.sql
+root@586b26c89f12:/docker-entrypoint-initdb.d# <span class="nb">echo</span> <span class="s2">&quot;create table message_log (registered TIMESTAMP, message TEXT);&quot;</span> &gt;&gt; init.sql
+root@586b26c89f12:/docker-entrypoint-initdb.d# ll
+total <span class="m">12</span>
+drwxr-xr-x <span class="m">1</span> root root <span class="m">4096</span> Jan <span class="m">24</span> <span class="m">15</span>:53 ./
+drwxr-xr-x <span class="m">1</span> root root <span class="m">4096</span> Jan <span class="m">24</span> <span class="m">15</span>:41 ../
+-rw-r--r-- <span class="m">1</span> root root   <span class="m">99</span> Jan <span class="m">24</span> <span class="m">15</span>:54 init.sql
+root@586b26c89f12:/docker-entrypoint-initdb.d# cat init.sql
+create database logger<span class="p">;</span>
+use logger<span class="p">;</span>
+create table message_log <span class="o">(</span>registered TIMESTAMP, message TEXT<span class="o">)</span><span class="p">;</span>
+root@586b26c89f12:/docker-entrypoint-initdb.d#
+</pre></div>
+</div>
+<p>「docker-entrypoint-initdb.d」配下に存在するshやsqlファイルはContainer生成時にじっこうされる。</p>
+</section>
+<section id="commit">
+<h4>修正をCommit<a class="headerlink" href="#commit" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                    NAMES
+586b26c89f12   mariadb   <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="m">21</span> minutes ago   Up <span class="m">20</span> minutes   <span class="m">0</span>.0.0.0:3306-&gt;3306/tcp   dbcontainer
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker images
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+mariadb      latest    d462573d8688   <span class="m">2</span> weeks ago   410MB
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker commit 586b26c89f12 db4ci
+sha256:28ca298e2b60c9f2fc9429be253b7b3098b1c357ff80cfdbd04b6b62fdb28964
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker images
+REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
+db4ci        latest    28ca298e2b60   <span class="m">9</span> seconds ago   410MB
+mariadb      latest    d462573d8688   <span class="m">2</span> weeks ago     410MB
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h4>Imageを再実行<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker stop 586b26c89f12
+586b26c89f12
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker rm 586b26c89f12
+586b26c89f12
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker images
+REPOSITORY   TAG       IMAGE ID       CREATED             SIZE
+db4ci        latest    28ca298e2b60   About an hour ago   410MB
+mariadb      latest    d462573d8688   <span class="m">2</span> weeks ago         410MB
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker run --name dbcontainer -d -p <span class="m">3306</span>:3306 -e <span class="nv">MYSQL_ROOT_PASSWORD</span><span class="o">=</span>maria db4ci
+2fe351cc0417e2f87c70d421d6b24cd71e386c595f3fa1118ee114413a23d141
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                    NAMES
+2fe351cc0417   db4ci     <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="m">4</span> minutes ago   Up <span class="m">3</span> minutes   <span class="m">0</span>.0.0.0:3306-&gt;3306/tcp   dbcontainer
+</pre></div>
+</div>
+<p>Containerのみ再起動すると初期化Scriptは実行されない。 実行中のContainerを終了・削除して、Imageから再起動すると初期化スクリプトが実行される。</p>
+</section>
+<section id="databasetable">
+<h4>DatabaseとTable確認<a class="headerlink" href="#databasetable" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>root@2fe351cc0417:/# mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with <span class="p">;</span> or <span class="se">\g</span>.
+Your MariaDB connection id is <span class="m">4</span>
+Server version: <span class="m">10</span>.6.5-MariaDB-1:10.6.5+maria~focal mariadb.org binary distribution
+
+Copyright <span class="o">(</span>c<span class="o">)</span> <span class="m">2000</span>, <span class="m">2018</span>, Oracle, MariaDB Corporation Ab and others.
+
+Type <span class="s1">&#39;help;&#39;</span> or <span class="s1">&#39;\h&#39;</span> <span class="k">for</span> help. Type <span class="s1">&#39;\c&#39;</span> to clear the current input statement.
+
+MariaDB <span class="o">[(</span>none<span class="o">)]</span>&gt; show databases<span class="p">;</span>
++--------------------+
+<span class="p">|</span> Database           <span class="p">|</span>
++--------------------+
+<span class="p">|</span> information_schema <span class="p">|</span>
+<span class="p">|</span> logger             <span class="p">|</span>
+<span class="p">|</span> mysql              <span class="p">|</span>
+<span class="p">|</span> performance_schema <span class="p">|</span>
+<span class="p">|</span> sys                <span class="p">|</span>
++--------------------+
+<span class="m">5</span> rows <span class="k">in</span> <span class="nb">set</span> <span class="o">(</span><span class="m">0</span>.001 sec<span class="o">)</span>
+
+MariaDB <span class="o">[(</span>none<span class="o">)]</span>&gt; use logger<span class="p">;</span>
+Reading table information <span class="k">for</span> completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+MariaDB <span class="o">[</span>logger<span class="o">]</span>&gt; show tables<span class="p">;</span>
++------------------+
+<span class="p">|</span> Tables_in_logger <span class="p">|</span>
++------------------+
+<span class="p">|</span> message_log      <span class="p">|</span>
++------------------+
+<span class="m">1</span> row <span class="k">in</span> <span class="nb">set</span> <span class="o">(</span><span class="m">0</span>.000 sec<span class="o">)</span>
+
+MariaDB <span class="o">[</span>logger<span class="o">]</span>&gt; quit
+Bye
+root@2fe351cc0417:/#
+</pre></div>
+</div>
+</section>
+</section>
+<section id="imagegithub">
+<h3>作成したImageをGithubへアップロード<a class="headerlink" href="#imagegithub" title="Permalink to this headline">¶</a></h3>
+<section id="githubaccess-token">
+<h4>GithubのAccess Token作成<a class="headerlink" href="#githubaccess-token" title="Permalink to this headline">¶</a></h4>
+<ol class="arabic simple">
+<li><p>「GitHub Profile &gt; Settings &gt; Developer settings &gt; Personal access tokens &gt; Generate new token」へ移動</p></li>
+<li><p>repo, write:packages, read:packages, delete:packagesをチェックして生成</p></li>
+</ol>
+</section>
+<section id="githubimagepush">
+<h4>GithubへImageをPush<a class="headerlink" href="#githubimagepush" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker login ghcr.io -u <span class="si">${</span><span class="nv">account</span><span class="si">}</span>
+Password:
+Login Succeeded
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker images
+REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+db4ci        latest    28ca298e2b60   <span class="m">7</span> days ago    410MB
+mariadb      latest    d462573d8688   <span class="m">3</span> weeks ago   410MB
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker tag 28ca298e2b60 ghcr.io/<span class="si">${</span><span class="nv">account</span><span class="si">}</span>/db4ci:v0.1
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker images
+REPOSITORY             TAG       IMAGE ID       CREATED       SIZE
+db4ci                  latest    28ca298e2b60   <span class="m">7</span> days ago    410MB
+ghcr.io/<span class="si">${</span><span class="nv">account</span><span class="si">}</span>/db4ci   v0.1      28ca298e2b60   <span class="m">7</span> days ago    410MB
+mariadb                latest    d462573d8688   <span class="m">3</span> weeks ago   410MB
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker push ghcr.io/<span class="si">${</span><span class="nv">account</span><span class="si">}</span>/db4ci:v0.1
+The push refers to repository <span class="o">[</span>ghcr.io/<span class="si">${</span><span class="nv">account</span><span class="si">}</span>/db4ci<span class="o">]</span>
+dc4228fb7e5e: Pushed
+75d472854d2e: Pushed
+d683d712eeb9: Pushed
+8dd0937cd2ed: Pushed
+237f27be7be8: Pushed
+b9bd86e7f504: Pushed
+758d9b108a97: Pushed
+8742bad8d199: Pushed
+35552a6449c8: Pushed
+8eba7440063f: Pushed
+0eba131dffd0: Pushed
+v0.1: digest: sha256:6d9a93eb30457e9ae60c7175bcb63330ea4b0380fe0ca60e18c1babd1776d15c size: <span class="m">2619</span>
+
+C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;
+</pre></div>
+</div>
+<p>「Your profile &gt; Packages」でPushしたImageが確認できる。</p>
+</section>
+</section>
+<section id="workflows">
+<h3>Workflows作成<a class="headerlink" href="#workflows" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>name: action for CI
+
+on: [ pull_request ]
+
+jobs:
+  Unit-test-with-Docker:
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: ghcr.io/${account}/db4ci:v0.1
+        credentials:
+          username: ${account}
+          password: ${Developer settingsのPersonal access token}
+        ports:
+          - 3306:3306
+
+    steps:
+      - name: setup jdk
+        uses: actions/setup-java@v2
+        with:
+          java-version: 15
+          distribution: &#39;zulu&#39;
+          architecture: x64
+
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Start build and test
+        run: ./gradlew clean build
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>name : GithubのActionsの左バーに表示される名称</p></li>
+<li><p>on : 実行トリガー</p></li>
+<li><p>jobs : 実行グループ</p></li>
+<li><p>Unit-test-with-Docker : Jobのラベル、GithubのActions詳細の左バーに表示される名称</p></li>
+<li><p>runs-on : Jobが実行されるOS</p></li>
+<li><dl class="simple">
+<dt>services<span class="classifier">Job実行中に必要なサービスをHostするためのDockerコンテナ</span></dt><dd><ul>
+<li><p>Jobの開始終了で生成破棄されて、Jobの中のすべてのStepから通信可能</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>mariadb : サービスのラベル</p></li>
+<li><dl class="simple">
+<dt>image<span class="classifier">Dockerに使うイメージ。GithubのPackagesにあげたイメージのアドレス</span></dt><dd><ul>
+<li><p>Docker Hubのイメージならイメージ名のみでもOK</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>credentials : GithubのPackagesへアクセスするための認証情報</p></li>
+<li><p>ports : コンテナが利用するポート</p></li>
+</ul>
+</section>
+</section>
+<section id="id7">
+<h2>課題<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>テーブル作成された状態のDocker Imageを作成（Dockerの思想的な部分なのか）</p></li>
+<li><p>Workflow定義でAccess Tokenを外だし</p></li>
+</ul>
+</section>
+</section>
+
+    <div id="raise-top"></div>
+
+                </div>
+            </div> <!-- document -->
+
+
+        </div> <!-- documentwrapper -->
+        <footer>
+            <p class="show-copyright">
+                &copy; Copyright 2019, soyoyoo.
+            </p>
+            <p class="show-sphinx">
+              Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 4.4.0.
+            </p>
+            
+              <p class="theme-info"><a href="https://pypi.python.org/pypi/hachibee-sphinx-theme">Sphinx-hachibee-theme</a> is hosted on <a href="https://github.com/hachibeeDI/Sphinx-hachibee-theme">Github</a></p>
+            
+        </footer>
+    </div>
+    <script type="text/javascript" src="_static/main.js" async></script>
+    </body>
+</html>

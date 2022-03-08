@@ -4,18 +4,16 @@
    contain the root `toctree` directive.
 
 =======================================
-Sphinx연습장
+note
 =======================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
-
+   actionsAndDocker
 
 Indices and tables
 ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
