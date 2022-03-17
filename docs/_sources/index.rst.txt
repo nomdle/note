@@ -7,13 +7,12 @@
 note
 =======================================
 
+Contents
+---------------------------------------
+
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
 
    actionsAndDocker
 
-Indices and tables
-==================
-
-* :ref:`search`
+:ref:`search`
