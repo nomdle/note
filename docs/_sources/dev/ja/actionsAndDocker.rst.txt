@@ -7,9 +7,9 @@ DockerでDBを利用するUNITテストをGithubで実行
 
 Databaseを利用するUNITテストをGithubのリソースのみ利用して実行できるようにする。  
 
-* Docker Containerで稼働するMariaDBイメージをGithubにアップ
-* MariaDB上のテーブルへアクセスするUNITテストを作成
-* ActionsのWorkflowでDockerイメージのDatabaseを利用してUNITテストを実行
+- Docker Containerで稼働するMariaDBイメージをGithubにアップ
+- MariaDB上のテーブルへアクセスするUNITテストを作成
+- ActionsのWorkflowでDockerイメージのDatabaseを利用してUNITテストを実行
 
 手順
 =======================================
@@ -17,12 +17,12 @@ Databaseを利用するUNITテストをGithubのリソースのみ利用して�
 Database構成
 ---------------------------------------
 
-* Server Host : localhost
-* Port : 3306
-* Database : logger
-* Username : root
-* Password : maria
-* Table : message_log
+- Server Host : localhost
+- Port : 3306
+- Database : logger
+- Username : root
+- Password : maria
+- Table : message_log
 
 +------------+-----------+
 | Name       | Type      |
@@ -154,11 +154,11 @@ MariaDB実行
     
     C:\Users\tjrdu\projects\action-study>
 
-* -name : container name
-* -d : daemon execute
-* -p : local port / container port
-* -e : environment variable
-* mariadb : image name
+- -name : container name
+- -d : daemon execute
+- -p : local port / container port
+- -e : environment variable
+- mariadb : image name
 
 Container実行確認
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -175,8 +175,8 @@ Containerへ接続
     C:\Users\tjrdu\projects\action-study>docker exec -it dbcontainer /bin/bash
     root@586b26c89f12:/#
 
-* -i : interactive
-* -t : tty(teletpyewriter)
+- -i : interactive
+- -t : tty(teletpyewriter)
 
 初期化スクリプト作成
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -299,6 +299,8 @@ GithubのAccess Token作成
 
 #. 「GitHub Profile > Settings > Developer settings > Personal access tokens > Generate new token」へ移動
 #. repo, write:packages, read:packages, delete:packagesをチェックして生成
+#. 「Repository Settings > secrets > Actions secrets > New repository secrets」へ移動
+#. 「DOCKER_TOKEN」を名前で作成したPersonal access tokenを登録
 
 GithubへImageをPush
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -342,7 +344,7 @@ GithubへImageをPush
 
 Workflows作成
 ---------------------------------------
-.. code-block::
+.. code-block:: yaml
 
     name: action for CI
 
@@ -354,10 +356,10 @@ Workflows作成
    
         services:
           mariadb:
-            image: ghcr.io/${account}/db4ci:v0.1
+            image: ghcr.io/nomdle/db4ci:v0.1
             credentials:
-              username: ${account}
-              password: ${Developer settingsのPersonal access token}
+              username: $GITHUB_REPOSITORY_OWNER
+              password: ${{ secrets.DOCKER_TOKEN }}
             ports:
               - 3306:3306
    
@@ -378,20 +380,19 @@ Workflows作成
           - name: Start build and test
             run: ./gradlew clean build
 
-* name : GithubのActionsの左バーに表示される名称
-* on : 実行トリガー
-* jobs : 実行グループ
-* Unit-test-with-Docker : Jobのラベル、GithubのActions詳細の左バーに表示される名称
-* runs-on : Jobが実行されるOS
-* services : Job実行中に必要なサービスをHostするためのDockerコンテナ
-    * Jobの開始終了で生成破棄されて、Jobの中のすべてのStepから通信可能
-* mariadb : サービスのラベル
-* image : Dockerに使うイメージ。GithubのPackagesにあげたイメージのアドレス
-    * Docker Hubのイメージならイメージ名のみでもOK
-* credentials : GithubのPackagesへアクセスするための認証情報
-* ports : コンテナが利用するポート
+- name : GithubのActionsの左バーに表示される名称
+- on : 実行トリガー
+- jobs : 実行グループ
+- Unit-test-with-Docker : Jobのラベル、GithubのActions詳細の左バーに表示される名称
+- runs-on : Jobが実行されるOS
+- services : Job実行中に必要なサービスをHostするためのDockerコンテナ
+    - Jobの開始終了で生成破棄されて、Jobの中のすべてのStepから通信可能
+- mariadb : サービスのラベル
+- image : Dockerに使うイメージ。GithubのPackagesにあげたイメージのアドレス
+    - Docker Hubのイメージならイメージ名のみでもOK
+- credentials : GithubのPackagesへアクセスするための認証情報
+- ports : コンテナが利用するポート
 
-課題
+残課題
 =======================================
-* テーブル作成された状態のDocker Imageを作成（Dockerの思想的な部分なのか）
-* Workflow定義でAccess Tokenを外だし
+- テーブル作成された状態のDocker Imageを作成

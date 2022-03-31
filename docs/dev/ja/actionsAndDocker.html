@@ -5,22 +5,22 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DockerでDBを利用するUNITテストをGithubで実行 &mdash; nomdle 0.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-    <link rel="shortcut icon" href="_static/favicon.ico"/>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
   <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
+    <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="note" href="index.html" /> 
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="../root.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -28,10 +28,10 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> nomdle
+            <a href="../../index.html" class="icon icon-home"> nomdle
           </a>
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -39,38 +39,7 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">DockerでDBを利用するUNITテストをGithubで実行</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id1">目標</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">手順</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#database">Database構成</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">テストソース</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#dbservice-kt">DbService.kt</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dbservicetest-kt">DbServiceTest.kt</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#build-gradle-kts">build.gradle.kts</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#mariadbimage">MariaDBのimage作成</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#image">imageをダウンロード</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mariadb">MariaDB実行</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#container">Container実行確認</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id4">Containerへ接続</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id5">初期化スクリプト作成</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#commit">修正をCommit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id6">Imageを再実行</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#databasetable">DatabaseとTable確認</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#imagegithub">作成したImageをGithubへアップロード</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#githubaccess-token">GithubのAccess Token作成</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#githubimagepush">GithubへImageをPush</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#workflows">Workflows作成</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#id7">課題</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">DockerでDBを利用するUNITテストをGithubで実行</a></li>
 </ul>
 
         </div>
@@ -79,17 +48,18 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">nomdle</a>
+          <a href="../../index.html">nomdle</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../root.html">&lt;no title&gt;</a> &raquo;</li>
       <li>DockerでDBを利用するUNITテストをGithubで実行</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/actionsAndDocker.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/dev/ja/actionsAndDocker.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -405,6 +375,8 @@ root@2fe351cc0417:/#
 <ol class="arabic simple">
 <li><p>「GitHub Profile &gt; Settings &gt; Developer settings &gt; Personal access tokens &gt; Generate new token」へ移動</p></li>
 <li><p>repo, write:packages, read:packages, delete:packagesをチェックして生成</p></li>
+<li><p>「Repository Settings &gt; secrets &gt; Actions secrets &gt; New repository secrets」へ移動</p></li>
+<li><p>「DOCKER_TOKEN」を名前で作成したPersonal access tokenを登録</p></li>
 </ol>
 </section>
 <section id="githubimagepush">
@@ -449,39 +421,39 @@ C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\
 </section>
 <section id="workflows">
 <h3>Workflows作成<a class="headerlink" href="#workflows" title="Permalink to this headline"></a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>name: action for CI
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">action for CI</span><span class="w"></span>
 
-on: [ pull_request ]
+<span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">pull_request</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"></span>
 
-jobs:
-  Unit-test-with-Docker:
-    runs-on: ubuntu-latest
+<span class="nt">jobs</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">Unit-test-with-Docker</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span><span class="w"></span>
 
-    services:
-      mariadb:
-        image: ghcr.io/${account}/db4ci:v0.1
-        credentials:
-          username: ${account}
-          password: ${Developer settingsのPersonal access token}
-        ports:
-          - 3306:3306
+<span class="w">    </span><span class="nt">services</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">mariadb</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ghcr.io/nomdle/db4ci:v0.1</span><span class="w"></span>
+<span class="w">        </span><span class="nt">credentials</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$GITHUB_REPOSITORY_OWNER</span><span class="w"></span>
+<span class="w">          </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.DOCKER_TOKEN }}</span><span class="w"></span>
+<span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3306:3306</span><span class="w"></span>
 
-    steps:
-      - name: setup jdk
-        uses: actions/setup-java@v2
-        with:
-          java-version: 15
-          distribution: &#39;zulu&#39;
-          architecture: x64
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">setup jdk</span><span class="w"></span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-java@v2</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">java-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15</span><span class="w"></span>
+<span class="w">          </span><span class="nt">distribution</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;zulu&#39;</span><span class="w"></span>
+<span class="w">          </span><span class="nt">architecture</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">x64</span><span class="w"></span>
 
-      - name: checkout
-        uses: actions/checkout@v2
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">checkout</span><span class="w"></span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span><span class="w"></span>
 
-      - name: grant execute permission for gradlew
-        run: chmod +x gradlew
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">grant execute permission for gradlew</span><span class="w"></span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chmod +x gradlew</span><span class="w"></span>
 
-      - name: Start build and test
-        run: ./gradlew clean build
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Start build and test</span><span class="w"></span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./gradlew clean build</span><span class="w"></span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -511,10 +483,9 @@ jobs:
 </section>
 </section>
 <section id="id7">
-<h2>課題<a class="headerlink" href="#id7" title="Permalink to this headline"></a></h2>
+<h2>残課題<a class="headerlink" href="#id7" title="Permalink to this headline"></a></h2>
 <ul class="simple">
-<li><p>テーブル作成された状態のDocker Imageを作成（Dockerの思想的な部分なのか）</p></li>
-<li><p>Workflow定義でAccess Tokenを外だし</p></li>
+<li><p>テーブル作成された状態のDocker Imageを作成</p></li>
 </ul>
 </section>
 </section>
@@ -523,7 +494,7 @@ jobs:
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="note" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../root.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

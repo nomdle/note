@@ -7,14 +7,11 @@
 **note**
 =======================================
 
-Contents
----------------------------------------
-
 .. toctree::
-   :maxdepth: 1
-
-   actionsAndDocker
-
+   :maxdepth: 3
+   :titlesonly:
+   
+   dev/root
 
 ----
 
