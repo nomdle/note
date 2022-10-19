@@ -16,11 +16,13 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="../root.html" /> 
+    <link rel="next" title="Javascript" href="electronjs.html" />
+    <link rel="prev" title="development" href="../root.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -39,7 +41,23 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">DockerでDBを利用するUNITテストをGithubで実行</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../root.html"><strong>development</strong></a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">DockerでDBを利用するUNITテストをGithubで実行</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">目標</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">手順</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#database">Database構成</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">テストソース</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mariadbimage">MariaDBのimage作成</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#imagegithub">作成したImageをGithubへアップロード</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#workflows">Workflows作成</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">残課題</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="electronjs.html">Javascript</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -56,7 +74,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../root.html">&lt;no title&gt;</a> &raquo;</li>
+          <li><a href="../root.html"><strong>development</strong></a> &raquo;</li>
       <li>DockerでDBを利用するUNITテストをGithubで実行</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/dev/ja/actionsAndDocker.rst.txt" rel="nofollow"> View page source</a>
@@ -68,9 +86,9 @@
            <div itemprop="articleBody">
              
   <section id="dockerdbunitgithub">
-<h1>DockerでDBを利用するUNITテストをGithubで実行<a class="headerlink" href="#dockerdbunitgithub" title="Permalink to this headline"></a></h1>
+<h1>DockerでDBを利用するUNITテストをGithubで実行<a class="headerlink" href="#dockerdbunitgithub" title="Permalink to this heading"></a></h1>
 <section id="id1">
-<h2>目標<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<h2>目標<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <p>Databaseを利用するUNITテストをGithubのリソースのみ利用して実行できるようにする。</p>
 <ul class="simple">
 <li><p>Docker Containerで稼働するMariaDBイメージをGithubにアップ</p></li>
@@ -79,9 +97,9 @@
 </ul>
 </section>
 <section id="id2">
-<h2>手順<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
+<h2>手順<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
 <section id="database">
-<h3>Database構成<a class="headerlink" href="#database" title="Permalink to this headline"></a></h3>
+<h3>Database構成<a class="headerlink" href="#database" title="Permalink to this heading"></a></h3>
 <ul class="simple">
 <li><p>Server Host : localhost</p></li>
 <li><p>Port : 3306</p></li>
@@ -111,91 +129,91 @@
 </table>
 </section>
 <section id="id3">
-<h3>テストソース<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h3>
+<h3>テストソース<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
 <p>Tableに対してアクセスする簡単なUNITテストを用意</p>
 <section id="dbservice-kt">
-<h4>DbService.kt<a class="headerlink" href="#dbservice-kt" title="Permalink to this headline"></a></h4>
-<div class="highlight-kotlin notranslate"><div class="highlight"><pre><span></span><span class="c1">//~~~省略~~~</span>
-<span class="kd">class</span> <span class="nc">DbService</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">init</span> <span class="p">{</span>
-        <span class="n">Database</span><span class="p">.</span><span class="na">connect</span><span class="p">(</span>
-            <span class="s">&quot;jdbc:mysql://localhost:3306/logger&quot;</span><span class="p">,</span>
-            <span class="n">driver</span> <span class="o">=</span> <span class="s">&quot;com.mysql.cj.jdbc.Driver&quot;</span><span class="p">,</span>
-            <span class="n">user</span> <span class="o">=</span> <span class="s">&quot;root&quot;</span><span class="p">,</span>
-            <span class="n">password</span> <span class="o">=</span> <span class="s">&quot;maria&quot;</span>
-        <span class="p">)</span>
-    <span class="p">}</span>
+<h4>DbService.kt<a class="headerlink" href="#dbservice-kt" title="Permalink to this heading"></a></h4>
+<div class="highlight-kotlin notranslate"><div class="highlight"><pre><span></span><span class="c1">//~~~省略~~~</span><span class="w"></span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">DbService</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">init</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">Database</span><span class="p">.</span><span class="na">connect</span><span class="p">(</span><span class="w"></span>
+<span class="w">            </span><span class="s">&quot;jdbc:mysql://localhost:3306/logger&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">driver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;com.mysql.cj.jdbc.Driver&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;root&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;maria&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 
-    <span class="kd">fun</span> <span class="nf">register</span><span class="p">(</span><span class="nd">@NotNull</span> <span class="n">registered</span><span class="p">:</span> <span class="n">LocalDateTime</span><span class="p">,</span> <span class="nd">@NotNull</span> <span class="n">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">MessageLog</span><span class="p">.</span><span class="na">insert</span> <span class="p">{</span>
-            <span class="nb">it</span><span class="o">[</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">registered</span><span class="o">]</span> <span class="o">=</span> <span class="n">registered</span>
-            <span class="nb">it</span><span class="o">[</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">message</span><span class="o">]</span> <span class="o">=</span> <span class="n">message</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="nd">@NotNull</span><span class="w"> </span><span class="n">registered</span><span class="p">:</span><span class="w"> </span><span class="n">LocalDateTime</span><span class="p">,</span><span class="w"> </span><span class="nd">@NotNull</span><span class="w"> </span><span class="n">message</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">MessageLog</span><span class="p">.</span><span class="na">insert</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nb">it</span><span class="o">[</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">registered</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">registered</span><span class="w"></span>
+<span class="w">            </span><span class="nb">it</span><span class="o">[</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">message</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">message</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="dbservicetest-kt">
-<h4>DbServiceTest.kt<a class="headerlink" href="#dbservicetest-kt" title="Permalink to this headline"></a></h4>
-<div class="highlight-kotlin notranslate"><div class="highlight"><pre><span></span><span class="c1">//~~~省略~~~</span>
-<span class="kd">class</span> <span class="nc">DbServiceTest</span> <span class="p">{</span>
-    <span class="nd">@Test</span>
-    <span class="kd">fun</span> <span class="nf">testInsert</span><span class="p">()</span> <span class="p">{</span>
-        <span class="kd">val</span> <span class="nv">ds</span> <span class="o">=</span> <span class="n">DbService</span><span class="p">()</span>
-        <span class="n">transaction</span> <span class="p">{</span>
-            <span class="n">MessageLog</span><span class="p">.</span><span class="na">deleteAll</span><span class="p">()</span>
+<h4>DbServiceTest.kt<a class="headerlink" href="#dbservicetest-kt" title="Permalink to this heading"></a></h4>
+<div class="highlight-kotlin notranslate"><div class="highlight"><pre><span></span><span class="c1">//~~~省略~~~</span><span class="w"></span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">DbServiceTest</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@Test</span><span class="w"></span>
+<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">testInsert</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">ds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DbService</span><span class="p">()</span><span class="w"></span>
+<span class="w">        </span><span class="n">transaction</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">MessageLog</span><span class="p">.</span><span class="na">deleteAll</span><span class="p">()</span><span class="w"></span>
 
-            <span class="kd">val</span> <span class="nv">expected</span> <span class="o">=</span> <span class="n">mapOf</span><span class="o">&lt;</span><span class="kt">Int</span><span class="p">,</span> <span class="n">Pair</span><span class="o">&lt;</span><span class="n">LocalDateTime</span><span class="p">,</span> <span class="kt">String</span><span class="o">&gt;&gt;</span><span class="p">(</span>
-                <span class="m">0</span> <span class="n">to</span> <span class="n">Pair</span><span class="p">(</span><span class="n">LocalDateTime</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="m">2021</span><span class="p">,</span> <span class="m">9</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">),</span> <span class="s">&quot;first message&quot;</span><span class="p">),</span>
-                <span class="m">1</span> <span class="n">to</span> <span class="n">Pair</span><span class="p">(</span><span class="n">LocalDateTime</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="m">2021</span><span class="p">,</span> <span class="m">10</span><span class="p">,</span> <span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">),</span> <span class="s">&quot;second message&quot;</span><span class="p">),</span>
-            <span class="p">)</span>
+<span class="w">            </span><span class="kd">val</span><span class="w"> </span><span class="nv">expected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mapOf</span><span class="o">&lt;</span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="n">Pair</span><span class="o">&lt;</span><span class="n">LocalDateTime</span><span class="p">,</span><span class="w"> </span><span class="kt">String</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="w"></span>
+<span class="w">                </span><span class="m">0</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Pair</span><span class="p">(</span><span class="n">LocalDateTime</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="m">2021</span><span class="p">,</span><span class="w"> </span><span class="m">9</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;first message&quot;</span><span class="p">),</span><span class="w"></span>
+<span class="w">                </span><span class="m">1</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">Pair</span><span class="p">(</span><span class="n">LocalDateTime</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="m">2021</span><span class="p">,</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;second message&quot;</span><span class="p">),</span><span class="w"></span>
+<span class="w">            </span><span class="p">)</span><span class="w"></span>
 
-            <span class="c1">// execute</span>
-            <span class="n">expected</span><span class="p">.</span><span class="na">values</span><span class="p">.</span><span class="na">forEach</span> <span class="p">{</span> <span class="n">ds</span><span class="p">.</span><span class="na">register</span><span class="p">(</span><span class="nb">it</span><span class="p">.</span><span class="na">first</span><span class="p">,</span> <span class="nb">it</span><span class="p">.</span><span class="na">second</span><span class="p">)</span> <span class="p">}</span>
+<span class="w">            </span><span class="c1">// execute</span><span class="w"></span>
+<span class="w">            </span><span class="n">expected</span><span class="p">.</span><span class="na">values</span><span class="p">.</span><span class="na">forEach</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ds</span><span class="p">.</span><span class="na">register</span><span class="p">(</span><span class="nb">it</span><span class="p">.</span><span class="na">first</span><span class="p">,</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">second</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-            <span class="c1">// assert</span>
-            <span class="n">MessageLog</span><span class="p">.</span><span class="na">selectAll</span><span class="p">().</span><span class="na">orderBy</span><span class="p">(</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">registered</span><span class="p">).</span><span class="na">forEachIndexed</span> <span class="p">{</span> <span class="n">index</span><span class="p">,</span> <span class="n">resultRow</span> <span class="o">-&gt;</span>
-                <span class="kd">val</span> <span class="nv">col1</span> <span class="o">=</span> <span class="n">resultRow</span><span class="o">[</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">registered</span><span class="o">]</span>
-                <span class="kd">val</span> <span class="nv">col2</span> <span class="o">=</span> <span class="n">resultRow</span><span class="o">[</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">message</span><span class="o">]</span>
+<span class="w">            </span><span class="c1">// assert</span><span class="w"></span>
+<span class="w">            </span><span class="n">MessageLog</span><span class="p">.</span><span class="na">selectAll</span><span class="p">().</span><span class="na">orderBy</span><span class="p">(</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">registered</span><span class="p">).</span><span class="na">forEachIndexed</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">index</span><span class="p">,</span><span class="w"> </span><span class="n">resultRow</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"></span>
+<span class="w">                </span><span class="kd">val</span><span class="w"> </span><span class="nv">col1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">resultRow</span><span class="o">[</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">registered</span><span class="o">]</span><span class="w"></span>
+<span class="w">                </span><span class="kd">val</span><span class="w"> </span><span class="nv">col2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">resultRow</span><span class="o">[</span><span class="n">MessageLog</span><span class="p">.</span><span class="na">message</span><span class="o">]</span><span class="w"></span>
 
-                <span class="n">assertEquals</span><span class="p">(</span>
-                    <span class="n">expected</span><span class="o">[</span><span class="n">index</span><span class="o">]!!</span><span class="p">.</span><span class="na">first</span><span class="p">,</span> <span class="n">col1</span><span class="p">,</span> <span class="s">&quot;index %d : registered&quot;</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-                <span class="p">)</span>
-                <span class="n">assertEquals</span><span class="p">(</span>
-                    <span class="n">expected</span><span class="o">[</span><span class="n">index</span><span class="o">]!!</span><span class="p">.</span><span class="na">second</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="s">&quot;index %d : message&quot;</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-                <span class="p">)</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<span class="w">                </span><span class="n">assertEquals</span><span class="p">(</span><span class="w"></span>
+<span class="w">                    </span><span class="n">expected</span><span class="o">[</span><span class="n">index</span><span class="o">]!!</span><span class="p">.</span><span class="na">first</span><span class="p">,</span><span class="w"> </span><span class="n">col1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;index %d : registered&quot;</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="n">assertEquals</span><span class="p">(</span><span class="w"></span>
+<span class="w">                    </span><span class="n">expected</span><span class="o">[</span><span class="n">index</span><span class="o">]!!</span><span class="p">.</span><span class="na">second</span><span class="p">,</span><span class="w"> </span><span class="n">col2</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;index %d : message&quot;</span><span class="p">.</span><span class="na">format</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="w"></span>
+<span class="w">                </span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="build-gradle-kts">
-<h4>build.gradle.kts<a class="headerlink" href="#build-gradle-kts" title="Permalink to this headline"></a></h4>
-<div class="highlight-kotlin notranslate"><div class="highlight"><pre><span></span><span class="c1">//~~~省略~~~</span>
-<span class="n">tasks</span> <span class="p">{</span>
-    <span class="n">compileKotlin</span> <span class="p">{</span>
-        <span class="n">kotlinOptions</span><span class="p">.</span><span class="na">jvmTarget</span> <span class="o">=</span> <span class="s">&quot;15&quot;</span>
-    <span class="p">}</span>
-    <span class="n">compileTestKotlin</span> <span class="p">{</span>
-        <span class="n">kotlinOptions</span><span class="p">.</span><span class="na">jvmTarget</span> <span class="o">=</span> <span class="s">&quot;15&quot;</span>
-    <span class="p">}</span>
-    <span class="n">test</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="na">testLogging</span> <span class="p">{</span>
-            <span class="k">this</span><span class="p">.</span><span class="na">showStandardStreams</span> <span class="o">=</span> <span class="kc">true</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<h4>build.gradle.kts<a class="headerlink" href="#build-gradle-kts" title="Permalink to this heading"></a></h4>
+<div class="highlight-kotlin notranslate"><div class="highlight"><pre><span></span><span class="c1">//~~~省略~~~</span><span class="w"></span>
+<span class="n">tasks</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">compileKotlin</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">kotlinOptions</span><span class="p">.</span><span class="na">jvmTarget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;15&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">compileTestKotlin</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="n">kotlinOptions</span><span class="p">.</span><span class="na">jvmTarget</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;15&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="n">test</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">testLogging</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">showStandardStreams</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="mariadbimage">
-<h3>MariaDBのimage作成<a class="headerlink" href="#mariadbimage" title="Permalink to this headline"></a></h3>
+<h3>MariaDBのimage作成<a class="headerlink" href="#mariadbimage" title="Permalink to this heading"></a></h3>
 <section id="image">
-<h4>imageをダウンロード<a class="headerlink" href="#image" title="Permalink to this headline"></a></h4>
+<h4>imageをダウンロード<a class="headerlink" href="#image" title="Permalink to this heading"></a></h4>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker pull mariadb
 Using default tag: latest
 latest: Pulling from library/mariadb
@@ -222,7 +240,7 @@ C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\
 </div>
 </section>
 <section id="mariadb">
-<h4>MariaDB実行<a class="headerlink" href="#mariadb" title="Permalink to this headline"></a></h4>
+<h4>MariaDB実行<a class="headerlink" href="#mariadb" title="Permalink to this heading"></a></h4>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker run --name dbcontainer -d -p <span class="m">3306</span>:3306 -e <span class="nv">MYSQL_ROOT_PASSWORD</span><span class="o">=</span>maria mariadb
 586b26c89f12109e1ebd6c166ca5ff675f74427ad88bd5dc444805874910401e
 
@@ -238,7 +256,7 @@ C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\
 </ul>
 </section>
 <section id="container">
-<h4>Container実行確認<a class="headerlink" href="#container" title="Permalink to this headline"></a></h4>
+<h4>Container実行確認<a class="headerlink" href="#container" title="Permalink to this heading"></a></h4>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker ps -a
 CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS              PORTS                    NAMES
 586b26c89f12   mariadb   <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   About a minute ago   Up About a minute   <span class="m">0</span>.0.0.0:3306-&gt;3306/tcp   dbcontainer
@@ -246,7 +264,7 @@ CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS   
 </div>
 </section>
 <section id="id4">
-<h4>Containerへ接続<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h4>
+<h4>Containerへ接続<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h4>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker <span class="nb">exec</span> -it dbcontainer /bin/bash
 root@586b26c89f12:/#
 </pre></div>
@@ -257,7 +275,7 @@ root@586b26c89f12:/#
 </ul>
 </section>
 <section id="id5">
-<h4>初期化スクリプト作成<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h4>
+<h4>初期化スクリプト作成<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h4>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>root@586b26c89f12:/# <span class="nb">cd</span> docker-entrypoint-initdb.d/
 root@586b26c89f12:/docker-entrypoint-initdb.d# <span class="nb">echo</span> <span class="s2">&quot;create database logger;&quot;</span> &gt;&gt; init.sql
 root@586b26c89f12:/docker-entrypoint-initdb.d# <span class="nb">echo</span> <span class="s2">&quot;use logger;&quot;</span> &gt;&gt; init.sql
@@ -277,7 +295,7 @@ root@586b26c89f12:/docker-entrypoint-initdb.d#
 <p>「docker-entrypoint-initdb.d」配下に存在するshやsqlファイルはContainer生成時にじっこうされる。</p>
 </section>
 <section id="commit">
-<h4>修正をCommit<a class="headerlink" href="#commit" title="Permalink to this headline"></a></h4>
+<h4>修正をCommit<a class="headerlink" href="#commit" title="Permalink to this heading"></a></h4>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker ps -a
 CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS          PORTS                    NAMES
 586b26c89f12   mariadb   <span class="s2">&quot;docker-entrypoint.s…&quot;</span>   <span class="m">21</span> minutes ago   Up <span class="m">20</span> minutes   <span class="m">0</span>.0.0.0:3306-&gt;3306/tcp   dbcontainer
@@ -299,7 +317,7 @@ C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\
 </div>
 </section>
 <section id="id6">
-<h4>Imageを再実行<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h4>
+<h4>Imageを再実行<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h4>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker stop 586b26c89f12
 586b26c89f12
 
@@ -325,7 +343,7 @@ CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS        
 <p>Containerのみ再起動すると初期化Scriptは実行されない。 実行中のContainerを終了・削除して、Imageから再起動すると初期化スクリプトが実行される。</p>
 </section>
 <section id="databasetable">
-<h4>DatabaseとTable確認<a class="headerlink" href="#databasetable" title="Permalink to this headline"></a></h4>
+<h4>DatabaseとTable確認<a class="headerlink" href="#databasetable" title="Permalink to this heading"></a></h4>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>root@2fe351cc0417:/# mysql -u root -p
 Enter password:
 Welcome to the MariaDB monitor.  Commands end with <span class="p">;</span> or <span class="se">\g</span>.
@@ -369,9 +387,9 @@ root@2fe351cc0417:/#
 </section>
 </section>
 <section id="imagegithub">
-<h3>作成したImageをGithubへアップロード<a class="headerlink" href="#imagegithub" title="Permalink to this headline"></a></h3>
+<h3>作成したImageをGithubへアップロード<a class="headerlink" href="#imagegithub" title="Permalink to this heading"></a></h3>
 <section id="githubaccess-token">
-<h4>GithubのAccess Token作成<a class="headerlink" href="#githubaccess-token" title="Permalink to this headline"></a></h4>
+<h4>GithubのAccess Token作成<a class="headerlink" href="#githubaccess-token" title="Permalink to this heading"></a></h4>
 <ol class="arabic simple">
 <li><p>「GitHub Profile &gt; Settings &gt; Developer settings &gt; Personal access tokens &gt; Generate new token」へ移動</p></li>
 <li><p>repo, write:packages, read:packages, delete:packagesをチェックして生成</p></li>
@@ -380,7 +398,7 @@ root@2fe351cc0417:/#
 </ol>
 </section>
 <section id="githubimagepush">
-<h4>GithubへImageをPush<a class="headerlink" href="#githubimagepush" title="Permalink to this headline"></a></h4>
+<h4>GithubへImageをPush<a class="headerlink" href="#githubimagepush" title="Permalink to this heading"></a></h4>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\p</span>rojects<span class="se">\a</span>ction-study&gt;docker login ghcr.io -u <span class="si">${</span><span class="nv">account</span><span class="si">}</span>
 Password:
 Login Succeeded
@@ -420,7 +438,7 @@ C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\
 </section>
 </section>
 <section id="workflows">
-<h3>Workflows作成<a class="headerlink" href="#workflows" title="Permalink to this headline"></a></h3>
+<h3>Workflows作成<a class="headerlink" href="#workflows" title="Permalink to this heading"></a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">action for CI</span><span class="w"></span>
 
 <span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">pull_request</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"></span>
@@ -483,7 +501,7 @@ C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\
 </section>
 </section>
 <section id="id7">
-<h2>残課題<a class="headerlink" href="#id7" title="Permalink to this headline"></a></h2>
+<h2>残課題<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>テーブル作成された状態のDocker Imageを作成</p></li>
 </ul>
@@ -494,7 +512,8 @@ C:<span class="se">\U</span>sers<span class="se">\t</span>jrdu<span class="se">\
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../root.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../root.html" class="btn btn-neutral float-left" title="development" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="electronjs.html" class="btn btn-neutral float-right" title="Javascript" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

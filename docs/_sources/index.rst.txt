@@ -4,14 +4,13 @@
    contain the root `toctree` directive.
 
 =======================================
-**note**
+note
 =======================================
 
 .. toctree::
-   :maxdepth: 3
-   :titlesonly:
+    :maxdepth: 1
    
-   dev/root
+    dev/root
 
 ----
 
